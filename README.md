@@ -15,4 +15,5 @@ Also, I applied these changes to fix a bug:
 http://sourceforge.net/p/vba/patches/35/
 
 [1] http://labmaster.bios.net.nz/vba-sdl-h/
+
 [2] https://www.dropbox.com/s/1bp33i7j2uxhlva/vba-sdl-h-src.tar.gz?dl=0
