@@ -248,11 +248,31 @@ bool screenMessage = false;
 char screenMessageBuffer[21];
 u32  screenMessageTime = 0;
 
-SDL_sem *sdlBufferLock  = NULL;
-SDL_sem *sdlBufferFull  = NULL;
-SDL_sem *sdlBufferEmpty = NULL;
-u8 sdlBuffer[4096];
-int sdlSoundLen = 0;
+const  int        sdlSoundSamples  = 2048;
+const  int        sdlSoundAlign    = 4;
+const  int        sdlSoundCapacity = sdlSoundSamples * 2;
+const  int        sdlSoundTotalLen = sdlSoundCapacity + sdlSoundAlign;
+static u8         sdlSoundBuffer[sdlSoundTotalLen];
+static int        sdlSoundRPos;
+static int        sdlSoundWPos;
+static SDL_cond  *sdlSoundCond;
+static SDL_mutex *sdlSoundMutex;
+
+static inline int soundBufferFree()
+{
+  int ret = sdlSoundRPos - sdlSoundWPos - sdlSoundAlign;
+  if (ret < 0)
+    ret += sdlSoundTotalLen;
+  return ret;
+}
+
+static inline int soundBufferUsed()
+{
+  int ret = sdlSoundWPos - sdlSoundRPos;
+  if (ret < 0)
+    ret += sdlSoundTotalLen;
+  return ret;
+}
 
 char *arg0;
 
@@ -2913,70 +2933,76 @@ void systemScreenCapture(int a)
   systemScreenMessage("Screen capture");
 }
 
-void soundCallback(void *,u8 *stream,int len)
+static void soundCallback(void *, u8 *stream, int len)
 {
-  if (!emulating)
+  if (len <= 0 || !emulating)
     return;
-
-  /* since this is running in a different thread, speedup and
-   * throttle can change at any time; save the value so locks
-   * stay in sync */
-  bool lock = (!speedup && !throttle) ? true : false;
-
-  if (lock)
-    SDL_SemWait (sdlBufferFull);
-
-  SDL_SemWait (sdlBufferLock);
-  memcpy (stream, sdlBuffer, len);
-  sdlSoundLen = 0;
-  SDL_SemPost (sdlBufferLock);
-
-  if (lock)
-    SDL_SemPost (sdlBufferEmpty);
+  SDL_mutexP(sdlSoundMutex);
+  const int nAvail = soundBufferUsed();
+  if (len > nAvail)
+    len = nAvail;
+  const int nAvail2 = ((sdlSoundTotalLen - sdlSoundRPos) + sdlSoundTotalLen) % sdlSoundTotalLen;
+  if (len >= nAvail2) {
+    memcpy(stream, &sdlSoundBuffer[sdlSoundRPos], nAvail2);
+    sdlSoundRPos = 0;
+    stream += nAvail2;
+    len    -= nAvail2;
+  }
+  if (len > 0) {
+    memcpy(stream, &sdlSoundBuffer[sdlSoundRPos], len);
+    sdlSoundRPos = (sdlSoundRPos + len) % sdlSoundTotalLen;
+    stream += len;
+  }
+  SDL_CondSignal(sdlSoundCond);
+  SDL_mutexV(sdlSoundMutex);
 }
 
 void systemWriteDataToSoundBuffer()
 {
-  if (SDL_GetAudioStatus () != SDL_AUDIO_PLAYING)
-    SDL_PauseAudio (0);
-
-  if ((sdlSoundLen + soundBufferLen) >= 2048*2) {
-    bool lock = (!speedup && !throttle) ? true : false;
-
-    if (lock)
-      SDL_SemWait (sdlBufferEmpty);
-
-    SDL_SemWait (sdlBufferLock);
-    int copied = 2048*2 - sdlSoundLen;
-    memcpy (sdlBuffer + sdlSoundLen, soundFinalWave, copied);
-    sdlSoundLen = 2048*2;
-    SDL_SemPost (sdlBufferLock);
-
-    if (lock) {
-      SDL_SemPost (sdlBufferFull);
-
-      /* wait for buffer to be dumped by soundCallback() */
-      SDL_SemWait (sdlBufferEmpty);
-      SDL_SemPost (sdlBufferEmpty);
-
-      SDL_SemWait (sdlBufferLock);
-      memcpy (sdlBuffer, ((u8 *)soundFinalWave) + copied,
-          soundBufferLen - copied);
-      sdlSoundLen = soundBufferLen - copied;
-      SDL_SemPost (sdlBufferLock);
-    }
-    else {
-      SDL_SemWait (sdlBufferLock);
-      memcpy (sdlBuffer, ((u8 *) soundFinalWave) + copied, soundBufferLen);
-      SDL_SemPost (sdlBufferLock);
-    }
+  if (SDL_GetAudioStatus() != SDL_AUDIO_PLAYING)
+  {
+    SDL_PauseAudio(0);
   }
-  else {
-    SDL_SemWait (sdlBufferLock);
-    memcpy (sdlBuffer + sdlSoundLen, soundFinalWave, soundBufferLen);
-    sdlSoundLen += soundBufferLen;
-    SDL_SemPost (sdlBufferLock);
+
+  int       remain = soundBufferLen;
+  const u8 *wave   = reinterpret_cast<const u8 *>(soundFinalWave);
+  if (remain <= 0)
+    return;
+  SDL_mutexP(sdlSoundMutex);
+  int n;
+  while (remain >= (n = soundBufferFree())) {
+    const int nAvail = ((sdlSoundTotalLen - sdlSoundWPos) + sdlSoundTotalLen) % sdlSoundTotalLen;
+    if (n >= nAvail) {
+      memcpy(&sdlSoundBuffer[sdlSoundWPos], wave, nAvail);
+      sdlSoundWPos  = 0;
+      wave       += nAvail;
+      remain     -= nAvail;
+      n          -= nAvail;
+    }
+    if (n > 0) {
+      memcpy(&sdlSoundBuffer[sdlSoundWPos], wave, n);
+      sdlSoundWPos = (sdlSoundWPos + n) % sdlSoundTotalLen;
+      wave   += n;
+      remain -= n;
+    }
+    if (!emulating || speedup || throttle) {
+      SDL_mutexV(sdlSoundMutex);
+      return;
+    }
+    SDL_CondWait(sdlSoundCond, sdlSoundMutex);
   }
+  const int nAvail = ((sdlSoundTotalLen - sdlSoundWPos) + sdlSoundTotalLen) % sdlSoundTotalLen;
+  if (remain >= nAvail) {
+    memcpy(&sdlSoundBuffer[sdlSoundWPos], wave, nAvail);
+    sdlSoundWPos = 0;
+    wave   += nAvail;
+    remain -= nAvail;
+  }
+  if (remain > 0) {
+    memcpy(&sdlSoundBuffer[sdlSoundWPos], wave, remain);
+    sdlSoundWPos = (sdlSoundWPos + remain) % sdlSoundTotalLen;
+  }
+  SDL_mutexV(sdlSoundMutex);
 }
 
 bool systemSoundInit()
@@ -3006,24 +3032,35 @@ bool systemSoundInit()
     fprintf(stderr,"Failed to open audio: %s\n", SDL_GetError());
     return false;
   }
-  soundBufferTotalLen = soundBufferLen*10;
-  sdlBufferLock  = SDL_CreateSemaphore (1);
-  sdlBufferFull  = SDL_CreateSemaphore (0);
-  sdlBufferEmpty = SDL_CreateSemaphore (1);
-  sdlSoundLen = 0;
+
+  sdlSoundCond  = SDL_CreateCond();
+  sdlSoundMutex = SDL_CreateMutex();
+
+  soundBufferTotalLen = soundBufferLen * 10;
+  sdlSoundRPos = sdlSoundWPos = 0;
   systemSoundOn = true;
+
   return true;
 }
 
 void systemSoundShutdown()
 {
-  SDL_CloseAudio ();
-  SDL_DestroySemaphore (sdlBufferLock);
-  SDL_DestroySemaphore (sdlBufferFull);
-  SDL_DestroySemaphore (sdlBufferEmpty);
-  sdlBufferLock  = NULL;
-  sdlBufferFull  = NULL;
-  sdlBufferEmpty = NULL;
+  SDL_mutexP(sdlSoundMutex);
+  int iSave = emulating;
+  emulating = 0;
+  SDL_CondSignal(sdlSoundCond);
+  SDL_mutexV(sdlSoundMutex);
+
+  SDL_DestroyCond(sdlSoundCond);
+  sdlSoundCond = NULL;
+
+  SDL_DestroyMutex(sdlSoundMutex);
+  sdlSoundMutex = NULL;
+
+  SDL_CloseAudio();
+
+  emulating = iSave;
+  systemSoundOn = false;
 }
 
 void systemSoundPause()
