@@ -906,6 +906,7 @@ FILE *sdlFindFile(const char *name)
 
   char *home = getenv("HOME");
 
+#ifdef WIN32
   if(home != NULL) {
     fprintf(stderr, "Searching home directory: %s\n", home);
     sprintf(path, "%s%c%s", home, FILE_SEP, name);
@@ -913,6 +914,15 @@ FILE *sdlFindFile(const char *name)
     if(f != NULL)
       return f;
   }
+#else // ! WIN32
+  if(home != NULL) {
+    sprintf(path, "%s%c.config%cvba-sdl-h%c%s", home, FILE_SEP, FILE_SEP, FILE_SEP, name);
+    fprintf(stderr, "Searching home directory: %s\n", path);
+    f = fopen(path, "r");
+    if(f != NULL)
+      return f;
+  }
+#endif // ! WIN32
 
 #ifdef WIN32
   home = getenv("USERPROFILE");

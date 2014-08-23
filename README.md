@@ -14,6 +14,13 @@ Also, I applied these changes to fix a bug:
 
 http://sourceforge.net/p/vba/patches/35/
 
+Config
+------
+
+The configuration file is named VisualBoyAdvance.cfg, and will be installed
+in /etc/ on "make install". You can copy it to ~/.config/vba-sdl-h/", and
+it will take precedence over the former.
+
 [1] http://labmaster.bios.net.nz/vba-sdl-h/
 
 [2] https://www.dropbox.com/s/1bp33i7j2uxhlva/vba-sdl-h-src.tar.gz?dl=0

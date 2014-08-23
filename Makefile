@@ -1,6 +1,9 @@
 
 CCX = g++
 CC = gcc
+TARGET = vba-sdl-h
+BININSTALLPATH = /usr/bin
+ETC = /etc
 
 INCLUDES = -I/usr/include/libpng12 -I/usr/include/SDL -Isrc
 
@@ -37,9 +40,17 @@ OBJECTS = ./src/motionblur.o ./src/agbprint.o \
 %.o : %.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
-VBA-SDL-H: $(OBJECTS)
+$(TARGET): $(OBJECTS)
 	g++ $(INCLUDES) $(LIBS) $^ -o $@
 
 clean:
-	rm -f $(OBJECTS)
+	rm -f $(OBJECTS) $(TARGET)
+
+install:
+	install "$(TARGET)" "$(BININSTALLPATH)"
+	install "src/VisualBoyAdvance.cfg" "$(ETC)"
+
+uninstall:
+	rm -f "$(BININSTALLPATH)/$(TARGET)"
+	rm -f "$(ETC)/VisualBoyAdvance.cfg"
 
