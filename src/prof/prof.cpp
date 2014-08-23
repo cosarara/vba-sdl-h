@@ -147,7 +147,7 @@ void profStartup(u32 lowpc, u32 highpc)
   int monsize;
   char *buffer;
   int o;
-  
+
   /*
    * round lowpc and highpc to multiples of the density we're using
    * so the rest of the scaling (here and in gprof) stays in ints.
@@ -179,13 +179,13 @@ void profStartup(u32 lowpc, u32 highpc)
   tos = (struct tostruct *) calloc(1, tolimit * sizeof( struct tostruct ) );
   if ( tos == NULL ) {
     systemMessage(0, MSG);
-    
+
     free(buffer);
     buffer = NULL;
-    
+
     free(froms);
     froms = NULL;
-    
+
     return;
   }
   tos[0].link = 0;
@@ -209,7 +209,7 @@ void profCleanup()
   u32 frompc;
   int toindex;
   struct gmon_hdr ghdr;
-  
+
   profControl(0);
   fd = fopen( "gmon.out" , "wb" );
   if ( fd == NULL ) {
@@ -230,7 +230,7 @@ void profCleanup()
     hz = 100;
 
   hist_num_bins = ssiz;
-  
+
   if(profWrite8(fd, GMON_TAG_TIME_HIST) ||
      profWrite32(fd, (u32)s_lowpc) ||
      profWrite32(fd, (u32)s_highpc) ||
@@ -246,7 +246,7 @@ void profCleanup()
 
   u16 count;
   int i;
-  
+
   for(i = 0; i < hist_num_bins; ++i) {
     profPut16((char *)&count, hist_sample[i]);
 
@@ -256,7 +256,7 @@ void profCleanup()
       return;
     }
   }
-  
+
   endfrom = s_textsize / (HASHFRACTION * sizeof(*froms));
   for ( fromindex = 0 ; fromindex < endfrom ; fromindex++ ) {
     if ( froms[fromindex] == 0 ) {
@@ -289,7 +289,7 @@ void profCount()
    * find the return address for mcount,
    * and the return address for mcount's caller.
    */
-  
+
   /* selfpc = pc pushed by mcount call.
      This identifies the function that was just entered.  */
   selfpc = (char *) reg[14].I;
@@ -382,14 +382,14 @@ void profCount()
       *frompcindex = (unsigned short)toindex;
       goto done;
     }
-    
+
   }
  done:
   profiling--;
   /* and fall through */
  out:
   return;  /* normal return restores saved registers */
-  
+
  overflow:
   profiling++; /* halt further profiling */
 #define TOLIMIT "mcount: tos overflow\n"

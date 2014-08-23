@@ -577,10 +577,10 @@ void mapperMBC7RAM(u16 address, u8 value)
   if(address == 0xa080) {
     // special processing needed
     int oldCs = gbDataMBC7.cs,oldSk=gbDataMBC7.sk;
-    
+
     gbDataMBC7.cs=value>>7;
     gbDataMBC7.sk=(value>>6)&1;
-    
+
     if(!oldCs && gbDataMBC7.cs) {
       if(gbDataMBC7.state==5) {
         if(gbDataMBC7.writeEnable) {
@@ -595,7 +595,7 @@ void mapperMBC7RAM(u16 address, u8 value)
         gbDataMBC7.state=0;
       }
     }
-    
+
     if(!oldSk && gbDataMBC7.sk) {
       if(gbDataMBC7.idle) {
         if(value & 0x02) {
@@ -642,7 +642,7 @@ void mapperMBC7RAM(u16 address, u8 value)
           gbDataMBC7.buffer <<= 1;
           gbDataMBC7.buffer |= (value&0x02)?1:0;
           gbDataMBC7.count++;
-          
+
           switch(gbDataMBC7.code) {
           case 0:
             if(gbDataMBC7.count==16) {
@@ -684,7 +684,7 @@ void mapperMBC7RAM(u16 address, u8 value)
               gbDataMBC7.state=4;
               gbDataMBC7.count=0;
               gbDataMBC7.buffer = (gbMemory[0xa000+gbDataMBC7.address*2]<<8)|
-                (gbMemory[0xa000+gbDataMBC7.address*2+1]);              
+                (gbMemory[0xa000+gbDataMBC7.address*2+1]);
             }
             break;
           case 3:
@@ -700,9 +700,9 @@ void mapperMBC7RAM(u16 address, u8 value)
         }
       }
     }
-    
+
     if (oldSk && !gbDataMBC7.sk) {
-      if (gbDataMBC7.state==4) { 
+      if (gbDataMBC7.state==4) {
         gbDataMBC7.value = (gbDataMBC7.buffer & 0x8000)?1:0;
         gbDataMBC7.buffer <<= 1;
         gbDataMBC7.count++;

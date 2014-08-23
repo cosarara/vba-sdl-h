@@ -123,7 +123,7 @@
 #line 1 "src/sdl/debugger-expr.y"
 
 #include <stdio.h>
-  
+
 #include "../System.h"
 #include "../GBA.h"
 #include "../Port.h"
@@ -1173,7 +1173,7 @@ yyparse ()
 #endif
 #endif
 {
-  
+
   int yystate;
   int yyn;
   int yyresult;
@@ -1429,13 +1429,13 @@ yyreduce:
 
   case 4:
 #line 60 "src/sdl/debugger-expr.y"
-    { 
-  std::string v((yyvsp[(1) - (1)].string)); 
+    {
+  std::string v((yyvsp[(1) - (1)].string));
   if (dexp_vars.count(v) == 0) {
     printf("Variable %s not defined.\n", (yyvsp[(1) - (1)].string));
-    YYABORT; 
+    YYABORT;
   }
-  (yyval.number) = dexp_vars[v]; 
+  (yyval.number) = dexp_vars[v];
 }
     break;
 
@@ -1740,17 +1740,17 @@ bool dexp_eval(char *expr, u32 *result)
   extern int dexprCol;
 
   dexp_flush();
-    
-  
+
+
   dexprString = expr;
   dexprCol = 0;
-    
+
   if(!dexp_parse()) {
     *result = dexp_result;
     return true;
   } else {
     return false;
-  }    
+  }
 }
 
 int dexp_error(char *s)
@@ -1809,5 +1809,5 @@ void dexp_loadVars(char *file)
   }
 }
 
-  
+
 

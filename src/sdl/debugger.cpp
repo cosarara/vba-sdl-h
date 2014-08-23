@@ -176,12 +176,12 @@ DebuggerCommand debuggerCommands[] = {
   { "db", debuggerDontBreak, "Don't break at the following address.", "[<address> [<number>]]" },
   { "dbc", debuggerDontBreakClear, "Clear the Don't Break list.", NULL },
   { "dload",debuggerDumpLoad, "Load raw data dump from file","<file> {address}"},
-  { "dsave",debuggerDumpSave, "Dump raw data to file","<file> {address} {size}"},  
+  { "dsave",debuggerDumpSave, "Dump raw data to file","<file> {address} {size}"},
   { "dn", debuggerDisassembleNear, "Disassembles instructions near PC", "[<number>]" },
   { "dt", debuggerDisassembleThumb, "Disassembles Thumb instructions", "[{address} [{number}]]" },
   { "eb", debuggerEditByte,   "Modify memory location (byte)", "{address} {value}" },
   { "eh", debuggerEditHalfWord,"Modify memory location (half-word)","{address} {value}" },
-  { "er", debuggerEditRegister,       "Modify register", "<register number> {value}" },  
+  { "er", debuggerEditRegister,       "Modify register", "<register number> {value}" },
   { "eval", debuggerEval, "Evaluate expression", "<expression>"},
   { "ew", debuggerEdit,       "Modify memory location (word)", "{address} {value}" },
   { "ft",      debuggerFindText,         "Search memory for ASCII-string.", "<start> [<max-result>] <string>" },
@@ -189,7 +189,7 @@ DebuggerCommand debuggerCommands[] = {
   { "fr",      debuggerFindResume,       "Resume current search.", "[<max-result>]" },
   { "h", debuggerHelp,        "Shows this help information. Type h <command> for command help", "[<command>]" },
   { "io", debuggerIo,         "Show I/O registers status", "[video|video2|dma|timer|misc]" },
-  { "load", debuggerReadState,	"Loads a Fx type savegame", "<number>" },  
+  { "load", debuggerReadState,	"Loads a Fx type savegame", "<number>" },
   { "mb", debuggerMemoryByte, "Shows memory contents (bytes)", "{address}" },
   { "mh", debuggerMemoryHalfWord, "Shows memory contents (half-words)", "{address}"},
   { "mw", debuggerMemory,     "Shows memory contents (words)", "{address}" },
@@ -199,7 +199,7 @@ DebuggerCommand debuggerCommands[] = {
   { "rt", debuggerRunTo, "Run to address", "{address}"},
   { "rta", debuggerRunToThumb, "Run to address (Thumb)", "{address}"},
   { "rtt", debuggerRunToArm, "Run to address (ARM)", "{address}"},
-  { "save", debuggerWriteState,	"Creates a Fx type savegame", "<number>" },  
+  { "save", debuggerWriteState,	"Creates a Fx type savegame", "<number>" },
   { "sbreak", debuggerBreak,    "Adds a breakpoint on the given function", "<function>|<line>|<file:line>" },
   { "sradix", debuggerSetRadix,   "Sets the print radix", "<radix>" },
   { "sprint", debuggerPrint,   "Print the value of a expression (if known)", "[/x|/o|/d] <expression>" },
@@ -251,11 +251,11 @@ unsigned int SearchResults;
 void debuggerApplyBreakpoint(u32 address, int num, int size)
 {
   if(size)
-    debuggerWriteMemory(address, (u32)(0xe1200070 | 
-                                       (num & 0xf) | 
+    debuggerWriteMemory(address, (u32)(0xe1200070 |
+                                       (num & 0xf) |
                                        ((num<<4)&0xf0)));
   else
-    debuggerWriteHalfWord(address, 
+    debuggerWriteHalfWord(address,
                           (u16)(0xbe00 | num));
 }
 
@@ -267,7 +267,7 @@ void debuggerDisableBreakpoints()
                           debuggerBreakpointList[i].value);
     else
       debuggerWriteHalfWord(debuggerBreakpointList[i].address,
-                            debuggerBreakpointList[i].value);      
+                            debuggerBreakpointList[i].value);
   }
 
   if (debuggerBkptRunTo.address) {
@@ -302,8 +302,8 @@ void debuggerUsage(char *cmd)
   for(int i = 0; ; i++) {
     if(debuggerCommands[i].name) {
       if(!strcmp(debuggerCommands[i].name, cmd)) {
-        printf("%s %s\t%s\n", 
-               debuggerCommands[i].name, 
+        printf("%s %s\t%s\n",
+               debuggerCommands[i].name,
                debuggerCommands[i].syntax ? debuggerCommands[i].syntax : "",
                debuggerCommands[i].help);
         break;
@@ -312,7 +312,7 @@ void debuggerUsage(char *cmd)
       printf("Unrecognized command '%s'.", cmd);
       break;
     }
-  }  
+  }
 }
 
 void debuggerPrintBaseType(Type *t, u32 value, u32 location,
@@ -370,7 +370,7 @@ void debuggerPrintBaseType(Type *t, u32 value, u32 location,
     }
     return;
   }
-  
+
   switch(t->encoding) {
   case DW_ATE_boolean:
     if(value)
@@ -412,9 +412,9 @@ void debuggerPrintBaseType(Type *t, u32 value, u32 location,
 
 char *debuggerPrintType(Type *t)
 {
-  char buffer[1024];  
+  char buffer[1024];
   static char buffer2[1024];
-  
+
   if(t->type == TYPE_pointer) {
     if(t->pointer)
       strcpy(buffer, debuggerPrintType(t->pointer));
@@ -425,7 +425,7 @@ char *debuggerPrintType(Type *t)
   } else if(t->type == TYPE_reference) {
     strcpy(buffer, debuggerPrintType(t->pointer));
     sprintf(buffer2, "%s &", buffer);
-    return buffer2;    
+    return buffer2;
   }
   return t->name;
 }
@@ -486,7 +486,7 @@ void debuggerPrintMember(Function *f,
         v = debuggerReadHalfWord(location);
       else if(size == 4)
         v = debuggerReadMemory(location);
-      
+
       while(bitSize) {
         int top = size*8 - off;
         int bot = top - bitSize;
@@ -512,7 +512,7 @@ void debuggerPrintMember(Function *f,
     } else {
       debuggerPrintValueInternal(f, m->type, m->location, m->bitSize,
                                  m->bitOffset, objLocation);
-    }  
+    }
 }
 
 void debuggerPrintStructure(Function *f, Type *t, u32 objLocation)
@@ -600,13 +600,13 @@ void debuggerPrintValueInternal(Function *f, Type *t,
   default:
     printf("%08x", value);
     break;
-  }  
+  }
 }
 
 void debuggerPrintValueInternal(Function *f, Type *t, ELFBlock *loc,
                                 int bitSize, int bitOffset, u32 objLocation)
 {
-  LocationType type;  
+  LocationType type;
   u32 location;
   if(loc) {
     if(objLocation)
@@ -624,7 +624,7 @@ void debuggerPrintValueInternal(Function *f, Type *t, ELFBlock *loc,
 void debuggerPrintValue(Function *f, Object *o)
 {
   debuggerPrintValueInternal(f, o->type, o->location, 0, 0, 0);
-  
+
   printf("\n");
 }
 
@@ -637,7 +637,7 @@ void debuggerSymbols(int argc, char **argv)
   bool match = false;
   int matchSize = 0;
   char *matchStr = NULL;
-  
+
   if(argc == 2) {
     match = true;
     matchSize = strlen(argv[1]);
@@ -709,7 +709,7 @@ void debuggerPrint(int argc, char **argv)
     u32 pc = armNextPC;
     Function *f = NULL;
     CompileUnit *u = NULL;
-    
+
     elfGetCurrentFunction(pc,
                           &f, &u);
 
@@ -730,8 +730,8 @@ void debuggerPrint(int argc, char **argv)
         printf("Unknown option %s\n", argv[1]);
         return;
       }
-    } 
-    
+    }
+
     char *s = argc == 2 ? argv[1] : argv[2];
 
     extern char *exprString;
@@ -792,7 +792,7 @@ void debuggerDebug(int n, char **args)
     systemDebug = v;
     printf("Debug level set to %d\n", systemDebug);
   } else
-    debuggerUsage(args[0]);      
+    debuggerUsage(args[0]);
 }
 
 void debuggerVerbose(int n, char **args)
@@ -803,7 +803,7 @@ void debuggerVerbose(int n, char **args)
     systemVerbose = v;
     printf("Verbose level set to %d\n", systemVerbose);
   } else
-    debuggerUsage("verbose");    
+    debuggerUsage("verbose");
 }
 
 void debuggerWhere(int n, char **args)
@@ -835,11 +835,11 @@ void debuggerLocals(int n, char **args)
         printf("%s=", o->name);
         debuggerPrintValue(f, o);
       }
-      o = o->next;      
+      o = o->next;
     }
   } else {
     printf("No information for current address\n");
-  }  
+  }
 }
 
 void debuggerNext(int n, char **args)
@@ -852,7 +852,7 @@ void debuggerNext(int n, char **args)
     if(debuggerAtBreakpoint) {
       debuggerContinueAfterBreakpoint();
       debuggerEnableBreakpoints(false);
-    } else 
+    } else
       emulator.emuMain(1);
   }
   debuggerDisableBreakpoints();
@@ -862,7 +862,7 @@ void debuggerNext(int n, char **args)
   if(elfGetCurrentFunction(a, &f, &u)) {
     char *file;
     int line = elfFindLine(u, f, a, &file);
-    
+
     printf("File %s, function %s, line %d\n", file, f->name,
            line);
   }
@@ -901,10 +901,10 @@ void debuggerSignal(int sig,int number)
       debuggerAtBreakpoint = true;
       debuggerBreakpointNumber = number;
 
-      
+
       Function *f = NULL;
       CompileUnit *u = NULL;
-      
+
       if(elfGetCurrentFunction(armNextPC, &f, &u)) {
         char *file;
         int line = elfFindLine(u,f,armNextPC,&file);
@@ -940,18 +940,18 @@ void debuggerBreakDelete(int n, char **args)
       n++;
       if(n < debuggerNumOfBreakpoints) {
         for(int i = n; i < debuggerNumOfBreakpoints; i++) {
-          debuggerBreakpointList[i-1].address = 
+          debuggerBreakpointList[i-1].address =
             debuggerBreakpointList[i].address;
-          debuggerBreakpointList[i-1].value = 
+          debuggerBreakpointList[i-1].value =
             debuggerBreakpointList[i].value;
-          debuggerBreakpointList[i-1].size = 
+          debuggerBreakpointList[i-1].size =
             debuggerBreakpointList[i].size;
         }
       }
       debuggerNumOfBreakpoints--;
     }
   } else
-    debuggerUsage("bd");    
+    debuggerUsage("bd");
 }
 
 void debuggerBreak(int n, char **args)
@@ -971,7 +971,7 @@ void debuggerBreak(int n, char **args)
       u32 addr;
       Function *f;
       CompileUnit *u;
-      
+
       if(elfFindLineInModule(&addr, name, line)) {
         if(elfGetCurrentFunction(addr, &f, &u)) {
           u32 addr2;
@@ -994,7 +994,7 @@ void debuggerBreak(int n, char **args)
       Function *f;
       CompileUnit *u;
       u32 addr;
-      
+
       if(elfGetCurrentFunction(armNextPC, &f, &u)) {
         if(elfFindLineInUnit(&addr, u, line)) {
           if(elfGetCurrentFunction(addr, &f, &u)) {
@@ -1031,7 +1031,7 @@ void debuggerBreak(int n, char **args)
         type = 0x0d;
         address &= ~1;
       }
-      // end new code 
+      // end new code
       if(type == 2)
         size = 1;
       debuggerBreakpointList[i].address = address;
@@ -1041,14 +1041,14 @@ void debuggerBreak(int n, char **args)
       //      debuggerApplyBreakpoint(address, i, size);
       debuggerNumOfBreakpoints++;
       if(size)
-        printf("Added ARM breakpoint at %08x\n", address);        
+        printf("Added ARM breakpoint at %08x\n", address);
       else
         printf("Added THUMB breakpoint at %08x\n", address);
     } else {
-      printf("%s is not a function symbol\n", args[1]); 
+      printf("%s is not a function symbol\n", args[1]);
     }
   } else
-    debuggerUsage(args[0]);  
+    debuggerUsage(args[0]);
 }
 
 void debuggerRunTo(int n, char **args)
@@ -1108,7 +1108,7 @@ void debuggerBreakThumb(int n, char **args)
     debuggerNumOfBreakpoints++;
     printf("Added THUMB breakpoint at %08x\n", address);
   } else
-    debuggerUsage("bt");    
+    debuggerUsage("bt");
 }
 
 void debuggerBreakArm(int n, char **args)
@@ -1152,13 +1152,13 @@ void debuggerBreakOnWrite(u32 address, u32 value, int size)
     return;
 
   if(size == 2)
-    printf("Breakpoint (on write) address %08x old:%08x new:%08x\n", 
+    printf("Breakpoint (on write) address %08x old:%08x new:%08x\n",
            address, debuggerReadMemory(address), value);
   else if(size == 1)
-    printf("Breakpoint (on write) address %08x old:%04x new:%04x\n", 
+    printf("Breakpoint (on write) address %08x old:%04x new:%04x\n",
            address, debuggerReadHalfWord(address),(u16)value);
   else
-    printf("Breakpoint (on write) address %08x old:%02x new:%02x\n", 
+    printf("Breakpoint (on write) address %08x old:%02x new:%02x\n",
            address, debuggerReadByte(address), (u8)value);
   debugger = true;
 }
@@ -1269,7 +1269,7 @@ void debuggerBreakWrite(int n, char **args)
       BitSet(m->write, address + i);
     }
   } else
-    debuggerUsage("bpw");    
+    debuggerUsage("bpw");
 }
 
 void debuggerDisassembleDo(int (*func)(u32, char*, int), u32 start, int count)
@@ -1287,19 +1287,19 @@ void debuggerDisassembleDo(int (*func)(u32, char*, int), u32 start, int count)
       len = l;
   }
   sprintf(format, "%%08x %%-%ds %%s\n", len);
-  
-  
+
+
   if (func == &disThumb)
     finish = start + (count << 1);
   else
     finish = start + (count << 2);
-  
-  /* note: this no longer outputs <count> instructions (a 4 byte bl was 
+
+  /* note: this no longer outputs <count> instructions (a 4 byte bl was
      previously counted as a single instruction), instead it now just
      disassembles over the range start - finish. This was changed so that
      disassembleNear produces the correct output when a bl instruction
      appeared before the current one */
-     
+
   while(pc < finish) {
     u32 addr = pc;
     pc += func(pc, buffer, 2);
@@ -1391,8 +1391,8 @@ void debuggerDisassembleNear(int n, char **args)
     }
 
     debuggerDisassembleNearDo(count);
-    
- 
+
+
 }
 
 void debuggerContinueAfterBreakpoint()
@@ -1486,16 +1486,16 @@ void debuggerIoDMA()
 {
   printf("DM0SAD   = %08x\n", (DM0SAD_H<<16)|DM0SAD_L);
   printf("DM0DAD   = %08x\n", (DM0DAD_H<<16)|DM0DAD_L);
-  printf("DM0CNT   = %08x\n", (DM0CNT_H<<16)|DM0CNT_L);  
+  printf("DM0CNT   = %08x\n", (DM0CNT_H<<16)|DM0CNT_L);
   printf("DM1SAD   = %08x\n", (DM1SAD_H<<16)|DM1SAD_L);
   printf("DM1DAD   = %08x\n", (DM1DAD_H<<16)|DM1DAD_L);
-  printf("DM1CNT   = %08x\n", (DM1CNT_H<<16)|DM1CNT_L);  
+  printf("DM1CNT   = %08x\n", (DM1CNT_H<<16)|DM1CNT_L);
   printf("DM2SAD   = %08x\n", (DM2SAD_H<<16)|DM2SAD_L);
   printf("DM2DAD   = %08x\n", (DM2DAD_H<<16)|DM2DAD_L);
-  printf("DM2CNT   = %08x\n", (DM2CNT_H<<16)|DM2CNT_L);  
+  printf("DM2CNT   = %08x\n", (DM2CNT_H<<16)|DM2CNT_L);
   printf("DM3SAD   = %08x\n", (DM3SAD_H<<16)|DM3SAD_L);
   printf("DM3DAD   = %08x\n", (DM3DAD_H<<16)|DM3DAD_L);
-  printf("DM3CNT   = %08x\n", (DM3CNT_H<<16)|DM3CNT_L);    
+  printf("DM3CNT   = %08x\n", (DM3CNT_H<<16)|DM3CNT_L);
 }
 
 void debuggerIoTimer()
@@ -1512,7 +1512,7 @@ void debuggerIoTimer()
 
 void debuggerIoMisc()
 {
-  printf("P1       = %04x\n", P1);  
+  printf("P1       = %04x\n", P1);
   printf("IE       = %04x\n", IE);
   printf("IF       = %04x\n", IF);
   printf("IME      = %04x\n", IME);
@@ -1551,7 +1551,7 @@ void debuggerEditByte(int n, char **args)
     }
     debuggerWriteByte(address, (u8)value);
   } else
-    debuggerUsage("eb");    
+    debuggerUsage("eb");
 }
 
 void debuggerEditHalfWord(int n, char **args)
@@ -1572,7 +1572,7 @@ void debuggerEditHalfWord(int n, char **args)
     }
     debuggerWriteHalfWord(address, (u16)value);
   } else
-    debuggerUsage("eh");        
+    debuggerUsage("eh");
 }
 
 void debuggerEdit(int n, char **args)
@@ -1593,7 +1593,7 @@ void debuggerEdit(int n, char **args)
     }
     debuggerWriteMemory(address, (u32)value);
   } else
-    debuggerUsage("ew");    
+    debuggerUsage("ew");
 }
 
 
@@ -1626,7 +1626,7 @@ void debuggerMemoryByte(int n, char **args)
       int n = debuggerReadByte(addr+13);
       int o = debuggerReadByte(addr+14);
       int p = debuggerReadByte(addr+15);
-      
+
       printf("%08x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n",
              addr,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,
              ASCII(a),ASCII(b),ASCII(c),ASCII(d),
@@ -1636,7 +1636,7 @@ void debuggerMemoryByte(int n, char **args)
       addr += 16;
     }
   } else
-    debuggerUsage("mb");    
+    debuggerUsage("mb");
 }
 
 void debuggerMemoryHalfWord(int n, char **args)
@@ -1668,7 +1668,7 @@ void debuggerMemoryHalfWord(int n, char **args)
       int n = debuggerReadByte(addr+13);
       int o = debuggerReadByte(addr+14);
       int p = debuggerReadByte(addr+15);
-      
+
       printf("%08x %02x%02x %02x%02x %02x%02x %02x%02x %02x%02x %02x%02x %02x%02x %02x%02x %c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n",
              addr,b,a,d,c,f,e,h,g,j,i,l,k,n,m,p,o,
              ASCII(a),ASCII(b),ASCII(c),ASCII(d),
@@ -1678,7 +1678,7 @@ void debuggerMemoryHalfWord(int n, char **args)
       addr += 16;
     }
   } else
-    debuggerUsage("mh");    
+    debuggerUsage("mh");
 }
 
 void debuggerMemory(int n, char **args)
@@ -1710,7 +1710,7 @@ void debuggerMemory(int n, char **args)
       int n = debuggerReadByte(addr+13);
       int o = debuggerReadByte(addr+14);
       int p = debuggerReadByte(addr+15);
-      
+
       printf("%08x %02x%02x%02x%02x %02x%02x%02x%02x %02x%02x%02x%02x %02x%02x%02x%02x %c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n",
              addr,d,c,b,a,h,g,f,e,l,k,j,i,p,o,n,m,
              ASCII(a),ASCII(b),ASCII(c),ASCII(d),
@@ -1720,7 +1720,7 @@ void debuggerMemory(int n, char **args)
       addr += 16;
     }
   } else
-    debuggerUsage("mw");    
+    debuggerUsage("mw");
 }
 
 void debuggerQuit(int, char **)
@@ -1728,7 +1728,7 @@ void debuggerQuit(int, char **)
   char buffer[10];
   printf("Are you sure you want to quit (y/n)? ");
   fgets(buffer, 1024, stdin);
-  
+
   if(buffer[0] == 'y' || buffer[0] == 'Y') {
     debugger = false;
     emulating = false;
@@ -1758,7 +1758,7 @@ char *
 rl_gets ()
 {
   // If the buffer has already been allocated, return the memory
-  // to the free pool. 
+  // to the free pool.
   if (line_read)
   {
     free (line_read);
@@ -1846,11 +1846,11 @@ void debuggerMain()
   char buffer[1024];
   char *commands[10];
   int commandCount = 0;
-  
+
   if(emulator.emuUpdateCPSR)
     emulator.emuUpdateCPSR();
   debuggerRegisters(0, NULL);
-  
+
   while(debugger) {
     systemSoundPause();
     commandCount = 0;
@@ -1880,7 +1880,7 @@ void debuggerMain()
         debuggerCommands[j].function(commandCount, commands);
         break;
       }
-    } 
+    }
   }
 }
 
@@ -1952,7 +1952,7 @@ void debuggerDumpSave(int n, char** args)
   u32 size;
   char *file;
   FILE *f;
-	
+
   if (n==4){
     file=args[1];
     if (!dexp_eval(args[2], &address)){
@@ -2001,7 +2001,7 @@ void debuggerEditRegister(int n, char **args)
     reg[r].I=val;
     printf("R%02d=%08X\n", r, val);
   } else
-    debuggerUsage("er");    
+    debuggerUsage("er");
 }
 
 void debuggerFindText(int n, char **args)
@@ -2010,7 +2010,7 @@ void debuggerFindText(int n, char **args)
   {
     SearchResults = 0;
     sscanf(args[1], "%x", &SearchStart);
-  
+
     if (n == 4)
 	{
       sscanf(args[2], "%u", &SearchMaxMatches);
@@ -2201,7 +2201,7 @@ unsigned int AddressToGBA(u8* mem)
   else
     return 0xFFFFFFFF;
 };
- 
+
 
 
 void debuggerDontBreak(int n, char **args)
@@ -2269,7 +2269,7 @@ void debuggerVar(int n, char **args)
   }
 
   if (strcmp(args[1], "set") == 0) {
-    
+
     if (n < 4) {
       printf("No expression specified.\n");
       return;
@@ -2309,10 +2309,10 @@ void debuggerVar(int n, char **args)
   }
 
   printf("Unrecognized sub-command.\n");
-    
+
 }
 
-  
+
 void debuggerTrace(int n, char **args)
 {
   if (n < 2) {
@@ -2337,7 +2337,7 @@ void debuggerTrace(int n, char **args)
     } else {
       printf("Could not open file for writing: %s", debuggerTraceFilename);
     }
-    
+
     return;
   }
 
@@ -2392,7 +2392,7 @@ void debuggerTrace(int n, char **args)
   }
 
   printf("Unrecognised command '%s'", args[1]);
-      
+
 }
 
 void debuggerTraceDo()

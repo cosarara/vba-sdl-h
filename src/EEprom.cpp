@@ -134,7 +134,7 @@ void eepromWrite(u32 /* address */, u8 value)
         eepromAddress = ((eepromBuffer[0] & 0x3F) << 8) |
           ((eepromBuffer[1] & 0xFF));
         if(!(eepromBuffer[0] & 0x40)) {
-          eepromBuffer[0] = bit;          
+          eepromBuffer[0] = bit;
           eepromBits = 1;
           eepromByte = 0;
           eepromMode = EEPROM_WRITEDATA;
@@ -151,7 +151,7 @@ void eepromWrite(u32 /* address */, u8 value)
         if(!(eepromBuffer[0] & 0x40)) {
           eepromBuffer[0] = bit;
           eepromBits = 1;
-          eepromByte = 0;         
+          eepromByte = 0;
           eepromMode = EEPROM_WRITEDATA;
         } else {
           eepromMode = EEPROM_READDATA;
@@ -188,4 +188,4 @@ void eepromWrite(u32 /* address */, u8 value)
     break;
   }
 }
-  
+

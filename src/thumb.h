@@ -789,7 +789,7 @@ switch(opcode >> 8) {
      int source = (opcode >> 3) & 0x07;
      int shift = (opcode >> 6) & 0x1f;
      u32 value;
-     
+
      if(shift) {
        LSL_RD_RM_I5;
      } else {
@@ -815,7 +815,7 @@ switch(opcode >> 8) {
      int source = (opcode >> 3) & 0x07;
      int shift = (opcode >> 6) & 0x1f;
      u32 value;
-     
+
      if(shift) {
        LSR_RD_RM_I5;
      } else {
@@ -836,13 +836,13 @@ switch(opcode >> 8) {
  case 0x15:
  case 0x16:
  case 0x17:
-   {     
+   {
      // ASR Rd, Rm, #Imm 5
      int dest = opcode & 0x07;
      int source = (opcode >> 3) & 0x07;
      int shift = (opcode >> 6) & 0x1f;
      u32 value;
-     
+
      if(shift) {
        ASR_RD_RM_I5;
      } else {
@@ -911,37 +911,37 @@ switch(opcode >> 8) {
    reg[1].I = opcode & 255;
    N_FLAG = false;
    Z_FLAG = (reg[1].I ? false : true);
-   break;   
+   break;
  case 0x22:
    // MOV R2, #Offset8
    reg[2].I = opcode & 255;
    N_FLAG = false;
    Z_FLAG = (reg[2].I ? false : true);
-   break;   
+   break;
  case 0x23:
    // MOV R3, #Offset8
    reg[3].I = opcode & 255;
    N_FLAG = false;
    Z_FLAG = (reg[3].I ? false : true);
-   break;   
+   break;
  case 0x24:
    // MOV R4, #Offset8
    reg[4].I = opcode & 255;
    N_FLAG = false;
    Z_FLAG = (reg[4].I ? false : true);
-   break;   
+   break;
  case 0x25:
    // MOV R5, #Offset8
    reg[5].I = opcode & 255;
    N_FLAG = false;
    Z_FLAG = (reg[5].I ? false : true);
-   break;   
+   break;
  case 0x26:
    // MOV R6, #Offset8
    reg[6].I = opcode & 255;
    N_FLAG = false;
    Z_FLAG = (reg[6].I ? false : true);
-   break;   
+   break;
  case 0x27:
    // MOV R7, #Offset8
    reg[7].I = opcode & 255;
@@ -983,31 +983,31 @@ switch(opcode >> 8) {
  case 0x30:
    // ADD R0,#Offset8
    ADD_RN_O8(0);
-   break;   
+   break;
  case 0x31:
    // ADD R1,#Offset8
    ADD_RN_O8(1);
-   break;   
+   break;
  case 0x32:
    // ADD R2,#Offset8
    ADD_RN_O8(2);
-   break;   
+   break;
  case 0x33:
    // ADD R3,#Offset8
    ADD_RN_O8(3);
-   break;   
+   break;
  case 0x34:
    // ADD R4,#Offset8
    ADD_RN_O8(4);
-   break;   
+   break;
  case 0x35:
    // ADD R5,#Offset8
    ADD_RN_O8(5);
-   break;   
+   break;
  case 0x36:
    // ADD R6,#Offset8
    ADD_RN_O8(6);
-   break;   
+   break;
  case 0x37:
    // ADD R7,#Offset8
    ADD_RN_O8(7);
@@ -1053,7 +1053,7 @@ switch(opcode >> 8) {
        reg[dest].I &= reg[(opcode >> 3)&7].I;
        N_FLAG = reg[dest].I & 0x80000000 ? true : false;
        Z_FLAG = reg[dest].I ? false : true;
-#ifdef BKPT_SUPPORT     
+#ifdef BKPT_SUPPORT
 #define THUMB_CONSOLE_OUTPUT(a,b) \
   if((opcode == 0x4000) && (reg[0].I == 0xC0DED00D)) {\
     extern void (*dbgOutput)(char *, u32);\
@@ -1089,7 +1089,7 @@ switch(opcode >> 8) {
            value = 0;
            C_FLAG = false;
          }
-         reg[dest].I = value;        
+         reg[dest].I = value;
        }
        N_FLAG = reg[dest].I & 0x80000000 ? true : false;
        Z_FLAG = reg[dest].I ? false : true;
@@ -1111,7 +1111,7 @@ switch(opcode >> 8) {
            value = 0;
            C_FLAG = false;
          }
-         reg[dest].I = value;        
+         reg[dest].I = value;
        }
        N_FLAG = reg[dest].I & 0x80000000 ? true : false;
        Z_FLAG = reg[dest].I ? false : true;
@@ -1131,7 +1131,7 @@ switch(opcode >> 8) {
        if(value) {
          if(value < 32) {
            ASR_RD_RS;
-           reg[dest].I = value;        
+           reg[dest].I = value;
          } else {
            if(reg[dest].I & 0x80000000){
              reg[dest].I = 0xFFFFFFFF;
@@ -1161,7 +1161,7 @@ switch(opcode >> 8) {
        // SBC Rd, Rs
        int dest = opcode & 0x07;
        u32 value = reg[(opcode >> 3)&7].I;
-       
+
        // SBC
        SBC_RD_RS;
      }
@@ -1171,7 +1171,7 @@ switch(opcode >> 8) {
      {
        int dest = opcode & 7;
        u32 value = reg[(opcode >> 3)&7].B.B0;
-       
+
        if(value) {
          value = value & 0x1f;
          if(value == 0) {
@@ -1229,7 +1229,7 @@ switch(opcode >> 8) {
    switch((opcode >> 6) & 3) {
    case 0x00:
      {
-       // ORR Rd, Rs       
+       // ORR Rd, Rs
        int dest = opcode & 7;
        reg[dest].I |= reg[(opcode >> 3) & 7].I;
        Z_FLAG = reg[dest].I ? false : true;
@@ -1295,7 +1295,7 @@ switch(opcode >> 8) {
          armNextPC = reg[15].I;
          reg[15].I += 2;
          clockTicks++;
-       }       
+       }
        break;
      case 3:
        // ADD Hd, Hs
@@ -1304,7 +1304,7 @@ switch(opcode >> 8) {
          reg[15].I &= 0xFFFFFFFE;
          armNextPC = reg[15].I;
          reg[15].I += 2;
-         clockTicks++;     
+         clockTicks++;
        }
        break;
      }
@@ -1373,7 +1373,7 @@ switch(opcode >> 8) {
          armNextPC = reg[15].I;
          reg[15].I += 2;
          clockTicks++;
-       }   
+       }
        break;
      }
    }
@@ -1405,7 +1405,7 @@ switch(opcode >> 8) {
          reg[15].I += 2;
        } else {
          armState = true;
-         reg[15].I &= 0xFFFFFFFC;       
+         reg[15].I &= 0xFFFFFFFC;
          armNextPC = reg[15].I;
          reg[15].I += 4;
        }
@@ -1426,7 +1426,7 @@ switch(opcode >> 8) {
  case 0x49:
    // LDR R1,[PC, #Imm]
    {
-     u32 address = (reg[15].I & 0xFFFFFFFC) + ((opcode & 0xFF) << 2);   
+     u32 address = (reg[15].I & 0xFFFFFFFC) + ((opcode & 0xFF) << 2);
      reg[1].I = CPUReadMemoryQuick(address);
      clockTicks += CPUUpdateTicksAccess32(address);
    }
@@ -1434,56 +1434,56 @@ switch(opcode >> 8) {
  case 0x4a:
    // LDR R2,[PC, #Imm]
    {
-     u32 address = (reg[15].I & 0xFFFFFFFC) + ((opcode & 0xFF) << 2);      
+     u32 address = (reg[15].I & 0xFFFFFFFC) + ((opcode & 0xFF) << 2);
      reg[2].I = CPUReadMemoryQuick(address);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
    break;
  case 0x4b:
    // LDR R3,[PC, #Imm]
    {
-     u32 address = (reg[15].I & 0xFFFFFFFC) + ((opcode & 0xFF) << 2);      
+     u32 address = (reg[15].I & 0xFFFFFFFC) + ((opcode & 0xFF) << 2);
      reg[3].I = CPUReadMemoryQuick(address);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
    break;
  case 0x4c:
    // LDR R4,[PC, #Imm]
    {
-     u32 address = (reg[15].I & 0xFFFFFFFC) + ((opcode & 0xFF) << 2);      
+     u32 address = (reg[15].I & 0xFFFFFFFC) + ((opcode & 0xFF) << 2);
      reg[4].I = CPUReadMemoryQuick(address);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
    break;
  case 0x4d:
    // LDR R5,[PC, #Imm]
    {
-     u32 address = (reg[15].I & 0xFFFFFFFC) + ((opcode & 0xFF) << 2);      
+     u32 address = (reg[15].I & 0xFFFFFFFC) + ((opcode & 0xFF) << 2);
      reg[5].I = CPUReadMemoryQuick(address);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
    break;
  case 0x4e:
    // LDR R6,[PC, #Imm]
    {
-     u32 address = (reg[15].I & 0xFFFFFFFC) + ((opcode & 0xFF) << 2);      
+     u32 address = (reg[15].I & 0xFFFFFFFC) + ((opcode & 0xFF) << 2);
      reg[6].I = CPUReadMemoryQuick(address);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
    break;
  case 0x4f:
    // LDR R7,[PC, #Imm]
    {
-     u32 address = (reg[15].I & 0xFFFFFFFC) + ((opcode & 0xFF) << 2);      
+     u32 address = (reg[15].I & 0xFFFFFFFC) + ((opcode & 0xFF) << 2);
      reg[7].I = CPUReadMemoryQuick(address);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
    break;
  case 0x50:
  case 0x51:
    // STR Rd, [Rs, Rn]
    {
-     u32 
+     u32
        address = reg[(opcode>>3)&7].I + reg[(opcode>>6)&7].I;
      CPUWriteMemory(address,
                     reg[opcode & 7].I);
@@ -1632,7 +1632,7 @@ switch(opcode >> 8) {
                       reg[opcode&7].W.W0);
      clockTicks += CPUUpdateTicksAccess16(address);
    }
-   break;   
+   break;
  case 0x88:
  case 0x89:
  case 0x8a:
@@ -1655,191 +1655,191 @@ switch(opcode >> 8) {
      CPUWriteMemory(address, reg[0].I);
      clockTicks += CPUUpdateTicksAccess32(address);
    }
-   break;      
+   break;
  case 0x91:
    // STR R1, [SP, #Imm]
    {
-     u32 address = reg[13].I + ((opcode&255)<<2);   
+     u32 address = reg[13].I + ((opcode&255)<<2);
      CPUWriteMemory(address, reg[1].I);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
-   break;      
+   break;
  case 0x92:
    // STR R2, [SP, #Imm]
    {
-     u32 address = reg[13].I + ((opcode&255)<<2);   
+     u32 address = reg[13].I + ((opcode&255)<<2);
      CPUWriteMemory(address, reg[2].I);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
-   break;      
+   break;
  case 0x93:
    // STR R3, [SP, #Imm]
    {
-     u32 address = reg[13].I + ((opcode&255)<<2);   
+     u32 address = reg[13].I + ((opcode&255)<<2);
      CPUWriteMemory(address, reg[3].I);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
-   break;      
+   break;
  case 0x94:
    // STR R4, [SP, #Imm]
    {
-     u32 address = reg[13].I + ((opcode&255)<<2);   
+     u32 address = reg[13].I + ((opcode&255)<<2);
      CPUWriteMemory(address, reg[4].I);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
-   break;      
+   break;
  case 0x95:
    // STR R5, [SP, #Imm]
    {
-     u32 address = reg[13].I + ((opcode&255)<<2);   
+     u32 address = reg[13].I + ((opcode&255)<<2);
      CPUWriteMemory(address, reg[5].I);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
-   break;      
+   break;
  case 0x96:
    // STR R6, [SP, #Imm]
    {
-     u32 address = reg[13].I + ((opcode&255)<<2);   
+     u32 address = reg[13].I + ((opcode&255)<<2);
      CPUWriteMemory(address, reg[6].I);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
-   break;      
+   break;
  case 0x97:
    // STR R7, [SP, #Imm]
    {
-     u32 address = reg[13].I + ((opcode&255)<<2);   
+     u32 address = reg[13].I + ((opcode&255)<<2);
      CPUWriteMemory(address, reg[7].I);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
-   break;   
+   break;
  case 0x98:
    // LDR R0, [SP, #Imm]
    {
-     u32 address = reg[13].I + ((opcode&255)<<2);   
+     u32 address = reg[13].I + ((opcode&255)<<2);
      reg[0].I = CPUReadMemoryQuick(address);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
    break;
  case 0x99:
    // LDR R1, [SP, #Imm]
    {
-     u32 address = reg[13].I + ((opcode&255)<<2);   
+     u32 address = reg[13].I + ((opcode&255)<<2);
      reg[1].I = CPUReadMemoryQuick(address);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
    break;
  case 0x9a:
    // LDR R2, [SP, #Imm]
    {
-     u32 address = reg[13].I + ((opcode&255)<<2);   
+     u32 address = reg[13].I + ((opcode&255)<<2);
      reg[2].I = CPUReadMemoryQuick(address);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
    break;
  case 0x9b:
    // LDR R3, [SP, #Imm]
    {
-     u32 address = reg[13].I + ((opcode&255)<<2);   
+     u32 address = reg[13].I + ((opcode&255)<<2);
      reg[3].I = CPUReadMemoryQuick(address);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
    break;
  case 0x9c:
    // LDR R4, [SP, #Imm]
    {
-     u32 address = reg[13].I + ((opcode&255)<<2);   
+     u32 address = reg[13].I + ((opcode&255)<<2);
      reg[4].I = CPUReadMemoryQuick(address);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
    break;
  case 0x9d:
    // LDR R5, [SP, #Imm]
    {
-     u32 address = reg[13].I + ((opcode&255)<<2);   
+     u32 address = reg[13].I + ((opcode&255)<<2);
      reg[5].I = CPUReadMemoryQuick(address);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
    break;
  case 0x9e:
    // LDR R6, [SP, #Imm]
    {
-     u32 address = reg[13].I + ((opcode&255)<<2);   
+     u32 address = reg[13].I + ((opcode&255)<<2);
      reg[6].I = CPUReadMemoryQuick(address);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
    break;
  case 0x9f:
    // LDR R7, [SP, #Imm]
    {
-     u32 address = reg[13].I + ((opcode&255)<<2);   
+     u32 address = reg[13].I + ((opcode&255)<<2);
      reg[7].I = CPUReadMemoryQuick(address);
-     clockTicks += CPUUpdateTicksAccess32(address);   
+     clockTicks += CPUUpdateTicksAccess32(address);
    }
    break;
  case 0xa0:
    // ADD R0, PC, Imm
    reg[0].I = (reg[15].I & 0xFFFFFFFC) + ((opcode&255)<<2);
-   break;   
+   break;
  case 0xa1:
    // ADD R1, PC, Imm
    reg[1].I = (reg[15].I & 0xFFFFFFFC) + ((opcode&255)<<2);
-   break;   
+   break;
  case 0xa2:
    // ADD R2, PC, Imm
    reg[2].I = (reg[15].I & 0xFFFFFFFC) + ((opcode&255)<<2);
-   break;   
+   break;
  case 0xa3:
    // ADD R3, PC, Imm
    reg[3].I = (reg[15].I & 0xFFFFFFFC) + ((opcode&255)<<2);
-   break;   
+   break;
  case 0xa4:
    // ADD R4, PC, Imm
    reg[4].I = (reg[15].I & 0xFFFFFFFC) + ((opcode&255)<<2);
-   break;   
+   break;
  case 0xa5:
    // ADD R5, PC, Imm
    reg[5].I = (reg[15].I & 0xFFFFFFFC) + ((opcode&255)<<2);
-   break;   
+   break;
  case 0xa6:
    // ADD R6, PC, Imm
    reg[6].I = (reg[15].I & 0xFFFFFFFC) + ((opcode&255)<<2);
-   break;   
+   break;
  case 0xa7:
    // ADD R7, PC, Imm
    reg[7].I = (reg[15].I & 0xFFFFFFFC) + ((opcode&255)<<2);
-   break;   
+   break;
  case 0xa8:
    // ADD R0, SP, Imm
    reg[0].I = reg[13].I + ((opcode&255)<<2);
-   break;   
+   break;
  case 0xa9:
    // ADD R1, SP, Imm
    reg[1].I = reg[13].I + ((opcode&255)<<2);
-   break;   
+   break;
  case 0xaa:
    // ADD R2, SP, Imm
    reg[2].I = reg[13].I + ((opcode&255)<<2);
-   break;   
+   break;
  case 0xab:
    // ADD R3, SP, Imm
    reg[3].I = reg[13].I + ((opcode&255)<<2);
-   break;   
+   break;
  case 0xac:
    // ADD R4, SP, Imm
    reg[4].I = reg[13].I + ((opcode&255)<<2);
-   break;   
+   break;
  case 0xad:
    // ADD R5, SP, Imm
    reg[5].I = reg[13].I + ((opcode&255)<<2);
-   break;   
+   break;
  case 0xae:
    // ADD R6, SP, Imm
    reg[6].I = reg[13].I + ((opcode&255)<<2);
-   break;   
+   break;
  case 0xaf:
    // ADD R7, SP, Imm
    reg[7].I = reg[13].I + ((opcode&255)<<2);
-   break;   
+   break;
  case 0xb0:
    {
      // ADD SP, Imm
@@ -1920,7 +1920,7 @@ switch(opcode >> 8) {
      POP_REG(128, 7);
      reg[13].I = temp;
    }
-   break;   
+   break;
  case 0xbd:
    // POP {Rlist, PC}
    {
@@ -1944,7 +1944,7 @@ switch(opcode >> 8) {
      reg[15].I += 2;
      reg[13].I = temp;
    }
-   break;      
+   break;
 #define THUMB_STM_REG(val,r,b) \
   if(opcode & (val)) {\
     CPUWriteMemory(address, reg[(r)].I);\
@@ -1972,7 +1972,7 @@ switch(opcode >> 8) {
      THUMB_STM_REG(64, 6, 0);
      THUMB_STM_REG(128, 7, 0);
    }
-   break;   
+   break;
  case 0xc1:
    {
      // STM R1!, {Rlist}
@@ -1989,7 +1989,7 @@ switch(opcode >> 8) {
      THUMB_STM_REG(64, 6, 1);
      THUMB_STM_REG(128, 7, 1);
    }
-   break;      
+   break;
  case 0xc2:
    {
      // STM R2!, {Rlist}
@@ -2006,7 +2006,7 @@ switch(opcode >> 8) {
      THUMB_STM_REG(64, 6, 2);
      THUMB_STM_REG(128, 7, 2);
    }
-   break;      
+   break;
  case 0xc3:
    {
      // STM R3!, {Rlist}
@@ -2023,7 +2023,7 @@ switch(opcode >> 8) {
      THUMB_STM_REG(64, 6, 3);
      THUMB_STM_REG(128, 7, 3);
    }
-   break;   
+   break;
  case 0xc4:
    {
      // STM R4!, {Rlist}
@@ -2040,7 +2040,7 @@ switch(opcode >> 8) {
      THUMB_STM_REG(64, 6, 4);
      THUMB_STM_REG(128, 7, 4);
    }
-   break;   
+   break;
  case 0xc5:
    {
      // STM R5!, {Rlist}
@@ -2057,7 +2057,7 @@ switch(opcode >> 8) {
      THUMB_STM_REG(64, 6, 5);
      THUMB_STM_REG(128, 7, 5);
    }
-   break;   
+   break;
  case 0xc6:
    {
      // STM R6!, {Rlist}
@@ -2074,7 +2074,7 @@ switch(opcode >> 8) {
      THUMB_STM_REG(64, 6, 6);
      THUMB_STM_REG(128, 7, 6);
    }
-   break;   
+   break;
  case 0xc7:
    {
      // STM R7!, {Rlist}
@@ -2192,7 +2192,7 @@ switch(opcode >> 8) {
      THUMB_LDM_REG(16, 4);
      THUMB_LDM_REG(32, 5);
      THUMB_LDM_REG(64, 6);
-     THUMB_LDM_REG(128, 7);   
+     THUMB_LDM_REG(128, 7);
      if(!(opcode & 16))
        reg[4].I = temp;
    }
@@ -2211,7 +2211,7 @@ switch(opcode >> 8) {
      THUMB_LDM_REG(16, 4);
      THUMB_LDM_REG(32, 5);
      THUMB_LDM_REG(64, 6);
-     THUMB_LDM_REG(128, 7);   
+     THUMB_LDM_REG(128, 7);
      if(!(opcode & 32))
        reg[5].I = temp;
    }
@@ -2230,7 +2230,7 @@ switch(opcode >> 8) {
      THUMB_LDM_REG(16, 4);
      THUMB_LDM_REG(32, 5);
      THUMB_LDM_REG(64, 6);
-     THUMB_LDM_REG(128, 7);   
+     THUMB_LDM_REG(128, 7);
      if(!(opcode & 64))
        reg[6].I = temp;
    }
@@ -2249,7 +2249,7 @@ switch(opcode >> 8) {
      THUMB_LDM_REG(16, 4);
      THUMB_LDM_REG(32, 5);
      THUMB_LDM_REG(64, 6);
-     THUMB_LDM_REG(128, 7);   
+     THUMB_LDM_REG(128, 7);
      if(!(opcode & 128))
        reg[7].I = temp;
    }
@@ -2262,124 +2262,124 @@ switch(opcode >> 8) {
      reg[15].I += 2;
      clockTicks = 3;
    }
-   break;      
+   break;
  case 0xd1:
    // BNE offset
    if(!Z_FLAG) {
-     reg[15].I += ((s8)(opcode & 0xFF)) << 1;       
+     reg[15].I += ((s8)(opcode & 0xFF)) << 1;
      armNextPC = reg[15].I;
      reg[15].I += 2;
-     clockTicks = 3;       
+     clockTicks = 3;
    }
-   break;   
+   break;
  case 0xd2:
    // BCS offset
    if(C_FLAG) {
-     reg[15].I += ((s8)(opcode & 0xFF)) << 1;       
+     reg[15].I += ((s8)(opcode & 0xFF)) << 1;
      armNextPC = reg[15].I;
      reg[15].I += 2;
-     clockTicks = 3;       
+     clockTicks = 3;
    }
-   break;   
+   break;
  case 0xd3:
    // BCC offset
    if(!C_FLAG) {
-     reg[15].I += ((s8)(opcode & 0xFF)) << 1;       
+     reg[15].I += ((s8)(opcode & 0xFF)) << 1;
      armNextPC = reg[15].I;
      reg[15].I += 2;
-     clockTicks = 3;       
+     clockTicks = 3;
    }
-   break;   
+   break;
  case 0xd4:
    // BMI offset
    if(N_FLAG) {
-     reg[15].I += ((s8)(opcode & 0xFF)) << 1;       
+     reg[15].I += ((s8)(opcode & 0xFF)) << 1;
      armNextPC = reg[15].I;
      reg[15].I += 2;
-     clockTicks = 3;       
+     clockTicks = 3;
    }
-   break;   
+   break;
  case 0xd5:
    // BPL offset
    if(!N_FLAG) {
-     reg[15].I += ((s8)(opcode & 0xFF)) << 1;       
+     reg[15].I += ((s8)(opcode & 0xFF)) << 1;
      armNextPC = reg[15].I;
      reg[15].I += 2;
-     clockTicks = 3;       
+     clockTicks = 3;
    }
-   break;   
+   break;
  case 0xd6:
    // BVS offset
    if(V_FLAG) {
-     reg[15].I += ((s8)(opcode & 0xFF)) << 1;       
+     reg[15].I += ((s8)(opcode & 0xFF)) << 1;
      armNextPC = reg[15].I;
      reg[15].I += 2;
-     clockTicks = 3;       
+     clockTicks = 3;
    }
-   break;   
+   break;
  case 0xd7:
    // BVC offset
    if(!V_FLAG) {
-     reg[15].I += ((s8)(opcode & 0xFF)) << 1;       
+     reg[15].I += ((s8)(opcode & 0xFF)) << 1;
      armNextPC = reg[15].I;
      reg[15].I += 2;
-     clockTicks = 3;       
+     clockTicks = 3;
    }
-   break;   
+   break;
  case 0xd8:
    // BHI offset
    if(C_FLAG && !Z_FLAG) {
-     reg[15].I += ((s8)(opcode & 0xFF)) << 1;       
+     reg[15].I += ((s8)(opcode & 0xFF)) << 1;
      armNextPC = reg[15].I;
      reg[15].I += 2;
-     clockTicks = 3;       
+     clockTicks = 3;
    }
-   break;   
+   break;
  case 0xd9:
    // BLS offset
    if(!C_FLAG || Z_FLAG) {
-     reg[15].I += ((s8)(opcode & 0xFF)) << 1;       
+     reg[15].I += ((s8)(opcode & 0xFF)) << 1;
      armNextPC = reg[15].I;
      reg[15].I += 2;
-     clockTicks = 3;       
+     clockTicks = 3;
    }
-   break;   
+   break;
  case 0xda:
    // BGE offset
    if(N_FLAG == V_FLAG) {
-     reg[15].I += ((s8)(opcode & 0xFF)) << 1;       
+     reg[15].I += ((s8)(opcode & 0xFF)) << 1;
      armNextPC = reg[15].I;
      reg[15].I += 2;
-     clockTicks = 3;       
+     clockTicks = 3;
    }
-   break;   
+   break;
  case 0xdb:
    // BLT offset
    if(N_FLAG != V_FLAG) {
-     reg[15].I += ((s8)(opcode & 0xFF)) << 1;       
+     reg[15].I += ((s8)(opcode & 0xFF)) << 1;
      armNextPC = reg[15].I;
      reg[15].I += 2;
-     clockTicks = 3;       
+     clockTicks = 3;
    }
-   break;   
+   break;
  case 0xdc:
    // BGT offset
    if(!Z_FLAG && (N_FLAG == V_FLAG)) {
-     reg[15].I += ((s8)(opcode & 0xFF)) << 1;       
+     reg[15].I += ((s8)(opcode & 0xFF)) << 1;
      armNextPC = reg[15].I;
      reg[15].I += 2;
-     clockTicks = 3;       
+     clockTicks = 3;
    }
-   break;   
+   break;
  case 0xdd:
    // BLE offset
    if(Z_FLAG || (N_FLAG != V_FLAG)) {
-     reg[15].I += ((s8)(opcode & 0xFF)) << 1;       
+     reg[15].I += ((s8)(opcode & 0xFF)) << 1;
      armNextPC = reg[15].I;
      reg[15].I += 2;
-     clockTicks = 3;       
+     clockTicks = 3;
    }
-   break;   
+   break;
  case 0xdf:
    // SWI #comment
    CPUSoftwareInterrupt(opcode & 0xFF);
@@ -2411,7 +2411,7 @@ switch(opcode >> 8) {
      int offset = (opcode & 0x7FF);
      reg[14].I = reg[15].I + (offset << 12);
    }
-   break;      
+   break;
  case 0xf4:
  case 0xf5:
  case 0xf6:
@@ -2421,7 +2421,7 @@ switch(opcode >> 8) {
      int offset = (opcode & 0x7FF);
      reg[14].I = reg[15].I + ((offset << 12) | 0xFF800000);
    }
-   break;   
+   break;
  case 0xf8:
  case 0xf9:
  case 0xfa:
@@ -2445,7 +2445,7 @@ switch(opcode >> 8) {
    // BKPT #comment
    extern void (*dbgSignal)(int,int);
    reg[15].I -= 2;
-   armNextPC -= 2;   
+   armNextPC -= 2;
    dbgSignal(5, opcode & 255);
    return;
 #endif

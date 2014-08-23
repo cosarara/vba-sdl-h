@@ -63,20 +63,20 @@ inline u32 CPUReadMemory(u32 address)
 #ifdef BKPT_SUPPORT
   memoryMap *m = &map[address >> 24];
   if (m->read && BitGet(m->read, address & m->mask)) {
-    debuggerBreakOnRead(address, 2); 
-    CPU_BREAK_LOOP_2; 
+    debuggerBreakOnRead(address, 2);
+    CPU_BREAK_LOOP_2;
   }
 #endif
 
 #ifdef DEV_VERSION
-  if(address & 3) {  
+  if(address & 3) {
     if(systemVerbose & VERBOSE_UNALIGNED_MEMORY) {
       log("Unaligned word read: %08x at %08x\n", address, armMode ?
           armNextPC - 4 : armNextPC - 2);
     }
   }
 #endif
-  
+
   u32 value;
   switch(address >> 24) {
   case 0:
@@ -88,7 +88,7 @@ inline u32 CPUReadMemory(u32 address)
               armNextPC - 4 : armNextPC - 2);
         }
 #endif
-        
+
         value = READ32LE(((u32 *)&biosProtected));
       }
       else goto unreadable;
@@ -124,7 +124,7 @@ inline u32 CPUReadMemory(u32 address)
   case 11:
   case 12:
     value = READ32LE(((u32 *)&rom[address&0x1FFFFFC]));
-    break;    
+    break;
   case 13:
     if(cpuEEPROMEnabled)
       // no need to swap this
@@ -143,7 +143,7 @@ inline u32 CPUReadMemory(u32 address)
           armNextPC - 4 : armNextPC - 2);
     }
 #endif
-    
+
     //    if(ioMem[0x205] & 0x40) {
       if(armState) {
         value = CPUReadMemoryQuick(reg[15].I);
@@ -161,7 +161,7 @@ inline u32 CPUReadMemory(u32 address)
 #ifdef C_CORE
     int shift = (address & 3) << 3;
     value = (value >> shift) | (value << (32 - shift));
-#else    
+#else
 #ifdef __GNUC__
     asm("and $3, %%ecx;"
         "shl $3 ,%%ecx;"
@@ -188,12 +188,12 @@ inline u32 CPUReadHalfWord(u32 address)
 #ifdef BKPT_SUPPORT
   memoryMap *m = &map[address >> 24];
   if (m->read && BitGet(m->read, address & m->mask)) {
-    debuggerBreakOnRead(address, 1); 
-    CPU_BREAK_LOOP_2; 
+    debuggerBreakOnRead(address, 1);
+    CPU_BREAK_LOOP_2;
   }
 #endif
 
-#ifdef DEV_VERSION      
+#ifdef DEV_VERSION
   if(address & 1) {
     if(systemVerbose & VERBOSE_UNALIGNED_MEMORY) {
       log("Unaligned halfword read: %08x at %08x\n", address, armMode ?
@@ -201,9 +201,9 @@ inline u32 CPUReadHalfWord(u32 address)
     }
   }
 #endif
-  
+
   u32 value;
-  
+
   switch(address >> 24) {
   case 0:
     if (reg[15].I >> 24) {
@@ -248,7 +248,7 @@ inline u32 CPUReadHalfWord(u32 address)
       value = rtcRead(address);
     else
       value = READ16LE(((u16 *)&rom[address & 0x1FFFFFE]));
-    break;    
+    break;
   case 13:
     if(cpuEEPROMEnabled)
       // no need to swap this
@@ -289,7 +289,7 @@ inline u32 CPUReadHalfWord(u32 address)
   if(address & 1) {
     value = (value >> 8) | (value << 24);
   }
-  
+
   return value;
 }
 
@@ -306,8 +306,8 @@ inline u8 CPUReadByte(u32 address)
 #ifdef BKPT_SUPPORT
   memoryMap *m = &map[address >> 24];
   if (m->read && BitGet(m->read, address & m->mask)) {
-    debuggerBreakOnRead(address, 0); 
-    CPU_BREAK_LOOP_2; 
+    debuggerBreakOnRead(address, 0);
+    CPU_BREAK_LOOP_2;
   }
 #endif
 
@@ -344,7 +344,7 @@ inline u8 CPUReadByte(u32 address)
   case 10:
   case 11:
   case 12:
-    return rom[address & 0x1FFFFFF];        
+    return rom[address & 0x1FFFFFF];
   case 13:
     if(cpuEEPROMEnabled)
       return eepromRead(address);
@@ -373,7 +373,7 @@ inline u8 CPUReadByte(u32 address)
               armNextPC - 4 : armNextPC - 2);
         }
 #endif
-    
+
     if(armState) {
       return CPUReadByteQuick(reg[15].I+(address & 3));
     } else {
@@ -389,8 +389,8 @@ inline void CPUWriteMemory(u32 address, u32 value)
 #ifdef BKPT_SUPPORT
   memoryMap *m = &map[address >> 24];
   if (m->write && BitGet(m->write, address & m->mask)) {
-    debuggerBreakOnWrite(address, value, 2); 
-    CPU_BREAK_LOOP_2; 
+    debuggerBreakOnWrite(address, value, 2);
+    CPU_BREAK_LOOP_2;
   }
 #endif
 
@@ -404,7 +404,7 @@ inline void CPUWriteMemory(u32 address, u32 value)
     }
   }
 #endif
-  
+
   switch(address >> 24) {
   case 0x02:
       WRITE32LE(((u32 *)&workRAM[address & 0x3FFFC]), value);

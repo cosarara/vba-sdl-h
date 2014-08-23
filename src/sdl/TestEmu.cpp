@@ -99,9 +99,9 @@ char *sdlGetFilename(char *name)
   static char filebuffer[2048];
 
   int len = strlen(name);
-  
+
   char *p = name + len - 1;
-  
+
   while(true) {
     if(*p == '/' ||
        *p == '\\') {
@@ -113,7 +113,7 @@ char *sdlGetFilename(char *name)
     if(len == 0)
       break;
   }
-  
+
   if(len == 0)
     strcpy(filebuffer, name);
   else
@@ -121,7 +121,7 @@ char *sdlGetFilename(char *name)
   return filebuffer;
 }
 
-/* The following two functions are required by debugger.cpp. They 
+/* The following two functions are required by debugger.cpp. They
    have been more or less copied from SDL.cpp */
 
 void sdlWriteState(int num)
@@ -165,7 +165,7 @@ int main(int argc, char **argv)
   captureDir[0] = 0;
   saveDir[0] = 0;
   batteryDir[0] = 0;
-  
+
   char buffer[1024];
 
   systemFrameSkip = frameSkip = 2;
@@ -193,23 +193,23 @@ int main(int argc, char **argv)
     bool failed = false;
     if(CPUIsZipFile(szFile)) {
       unzFile unz = unzOpen(szFile);
-      
+
       if(unz == NULL) {
         systemMessage(0, "Cannot open file %s", szFile);
         exit(-1);
       }
       int r = unzGoToFirstFile(unz);
-      
+
       if(r != UNZ_OK) {
         unzClose(unz);
         systemMessage(0, "Bad ZIP file %s", szFile);
         exit(-1);
       }
-      
+
       bool found = false;
-      
+
       unz_file_info info;
-      
+
       while(true) {
         r = unzGetCurrentFileInfo(unz,
                                   &info,
@@ -219,13 +219,13 @@ int main(int argc, char **argv)
                                   0,
                                   NULL,
                                   0);
-        
+
         if(r != UNZ_OK) {
           unzClose(unz);
           systemMessage(0,"Bad ZIP file %s", szFile);
           exit(-1);
         }
-        
+
         if(utilIsGBImage(buffer)) {
           found = true;
           cartridgeType = 1;
@@ -236,22 +236,22 @@ int main(int argc, char **argv)
           cartridgeType = 0;
           break;
         }
-        
+
         r = unzGoToNextFile(unz);
-        
+
         if(r != UNZ_OK)
           break;
       }
-      
+
       if(!found) {
         unzClose(unz);
         systemMessage(0, "No image found on ZIP file %s", szFile);
         exit(-1);
       }
-      
+
       unzClose(unz);
     }
-    
+
     if(utilIsGBImage(szFile) || cartridgeType == 1) {
       failed = !gbLoadRom(szFile);
       cartridgeType = 1;
@@ -267,14 +267,14 @@ int main(int argc, char **argv)
       systemMessage(0, "Unknown file type %s", szFile);
       exit(-1);
     }
-    
+
     if(failed) {
       systemMessage(0, "Failed to load file %s", szFile);
       exit(-1);
     }
     strcpy(filename, szFile);
     char *p = strrchr(filename, '.');
-    
+
     if(p)
       *p = 0;
   } else {
@@ -291,37 +291,37 @@ int main(int argc, char **argv)
     ioMem = (u8 *)calloc(1, 0x400);
 
     emulator = GBASystem;
-    
+
     CPUInit(biosFileName, useBios);
-    CPUReset();    
+    CPUReset();
   }
-  
-  if(debuggerStub) 
+
+  if(debuggerStub)
     remoteInit();
-  
+
   if(cartridgeType == 0) {
   } else if (cartridgeType == 1) {
     if(gbBorderOn) {
       gbBorderLineSkip = 256;
       gbBorderColumnSkip = 48;
       gbBorderRowSkip = 40;
-    } else {      
+    } else {
       gbBorderLineSkip = 160;
       gbBorderColumnSkip = 0;
       gbBorderRowSkip = 0;
-    }      
+    }
   } else {
   }
 
   for(int i = 0; i < 0x10000; i++) {
     systemColorMap32[i] = ((i & 0x1f) << systemRedShift) |
       (((i & 0x3e0) >> 5) << systemGreenShift) |
-      (((i & 0x7c00) >> 10) << systemBlueShift);  
+      (((i & 0x7c00) >> 10) << systemBlueShift);
   }
 
   emulating = 1;
   soundInit();
-  
+
   while(emulating) {
     if(!paused) {
       if(debugger && emulator.emuHasDebugger)
@@ -346,10 +346,10 @@ void systemMessage(int num, const char *msg, ...)
 {
   char buffer[2048];
   va_list valist;
-  
+
   va_start(valist, msg);
   vsprintf(buffer, msg, valist);
-  
+
   fprintf(stderr, "%s\n", buffer);
   va_end(valist);
 }
