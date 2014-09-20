@@ -41,7 +41,7 @@ OBJECTS = ./src/motionblur.o ./src/agbprint.o \
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
 $(TARGET): $(OBJECTS)
-	g++ $(INCLUDES) $(LIBS) $^ -o $@
+	g++ $(INCLUDES) $^ -o $@ $(LIBS) 
 
 clean:
 	rm -f $(OBJECTS) $(TARGET)
