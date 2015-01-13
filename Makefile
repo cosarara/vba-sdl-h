@@ -5,9 +5,9 @@ TARGET = vba-sdl-h
 BININSTALLPATH = /usr/bin
 ETC = /etc
 
-INCLUDES = -I/usr/include/libpng12 -I/usr/include/SDL -Isrc
+INCLUDES = -I/usr/include/libpng16 -I/usr/include/SDL -Isrc
 
-LIBS = -L/usr/lib -lSDL -lpthread -lreadline -lpng12 -lz -lminizip
+LIBS = -L/usr/lib -lSDL -lpthread -lreadline -lpng16 -lz -lminizip
 
 CXXFLAGS = -Wno-write-strings -DBKPT_SUPPORT -DSYSCONFDIR=\"/etc\" \
 -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" \
@@ -41,7 +41,7 @@ OBJECTS = ./src/motionblur.o ./src/agbprint.o \
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
 $(TARGET): $(OBJECTS)
-	g++ $(INCLUDES) $^ -o $@ $(LIBS) 
+	g++ $(INCLUDES) $^ -o $@ $(LIBS)
 
 clean:
 	rm -f $(OBJECTS) $(TARGET)
