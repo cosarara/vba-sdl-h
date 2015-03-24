@@ -14,6 +14,34 @@ Also, I applied these changes to fix a bug:
 
 http://sourceforge.net/p/vba/patches/35/
 
+
+Building
+--------
+
+Dependencies:
+
+* libpng (12 or 16, you can change the makefile for each)
+* SDL1.2
+* zlib
+* minizip
+* readline
+
+On arch linux you'll find all the dependencies in the repository.
+On debian you'll have to build minizip manually. To do so (you will need
+autotools):
+
+    $ git submodule init
+    $ git submodule update
+    $ cd minizip
+    $ rm -f Makefile
+    $ autoreconf -i
+    $ autoconf
+    $ automake --add-missing
+    $ automake
+    $ ./configure --prefix=/usr
+    $ make
+    # make install
+
 Config
 ------
 
