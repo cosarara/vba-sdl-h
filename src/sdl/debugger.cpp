@@ -1959,7 +1959,7 @@ void debuggerDumpSave(int n, char** args)
       printf("Invalid expression in address.\n");
       return;
     }
-    if (!dexp_eval(args[2], &size)){
+    if (!dexp_eval(args[3], &size)){
       printf("Invalid expression in size");
       return;
     }
