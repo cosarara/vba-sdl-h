@@ -1,10 +1,9 @@
 %{
-namespace std {  
-#include <stdio.h>
-#include <memory.h>
-#include <stdlib.h>
-#include <string.h>
-}
+
+#include <cstdio>
+#include <cstdlib>
+#include <memory>
+#include <cstring>
 
 using namespace std;
  
