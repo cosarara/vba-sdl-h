@@ -40,11 +40,14 @@ OBJECTS = ./src/motionblur.o ./src/agbprint.o \
 %.o : %.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
+%.cpp: %.y
+	bison $< -o $@
+
 $(TARGET): $(OBJECTS)
 	g++ $(INCLUDES) $^ -o $@ $(LIBS)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET)
+	rm -f $(OBJECTS) $(TARGET) src/expr.cpp
 
 install:
 	install "$(TARGET)" "$(BININSTALLPATH)"
